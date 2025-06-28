@@ -1,0 +1,133 @@
+/* Wrap calendar nicely centered */
+.custom-calendar-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40vh;
+}
+
+/* Style the datepicker calendar */
+.react-datepicker {
+  border: 1px solid rgba(0, 0, 0, 0.205);
+  background-color: white;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  padding: 0.5rem;
+  color: #222;
+}
+
+/* Dark mode support */
+.dark .react-datepicker {
+  background-color: #101828;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #eee;
+}
+
+/* Header styling */
+.react-datepicker__header {
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ddd;
+  padding: 0.75rem;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.dark .react-datepicker__header {
+  background-color: #344054;
+  border-bottom: 1px solid #444;
+}
+
+/* Weekday labels */
+.react-datepicker__day-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.dark .react-datepicker__day-name {
+  color: #bbb;
+}
+
+/* Day cells */
+.react-datepicker__day {
+  position: relative;
+  padding: 0.6rem 0;
+  margin: 0.2rem;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  color: #222;
+}
+
+.dark .react-datepicker__day {
+  color: #ddd;
+}
+
+.react-datepicker__day:hover {
+  background-color: #e3f2fd;
+}
+
+.dark .react-datepicker__day:hover {
+  background-color: #344054;
+}
+
+/* Today styling */
+.react-datepicker__day--today {
+  border: 1px solid blue;
+  background-color: 007bff;
+  border-radius: 0;
+}
+
+.dark .react-datepicker__day--today {
+  border-color: blue;
+  background-color: blue;
+}
+
+/* Selected day */
+.react-datepicker__day--selected {
+  background-color: #007bff;
+  color: white;
+  border-radius: 0;
+}
+
+.dark .react-datepicker__day--selected {
+  background-color: #465fff;
+  color: #000;
+}
+
+/* Disable outside month days */
+.react-datepicker__day--outside-month {
+  color: #ccc;
+}
+
+.dark .react-datepicker__day--outside-month {
+  color: #465fff;
+}
+
+/* Add icons inside day cell */
+.day-icon {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 1.2em;
+  z-index: 2;
+}
+
+/* Tooltip (optional) */
+.day-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.day-icon:hover .day-tooltip {
+  opacity: 1;
+}
