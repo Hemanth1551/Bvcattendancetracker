@@ -1,7 +1,7 @@
 {
   "name": "HD EduTime",
   "short_name": "HD EduTime",
-  "start_url": "/",
+  "start_url": "/signin",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1e3a8a",
