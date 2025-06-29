@@ -14,16 +14,28 @@ import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import ProtectedRoute from "./components/ProtectedRoute"; // <-- import this
 import PasswordBlock from "./pages/PasswordReset/Passwordreset";
+import { Navigate } from "react-router-dom";
+
 
 export default function App() {
+  const isLoggedIn = !!localStorage.getItem("student");
+
   return (
     <Router>
       <ScrollToTop />
 
       <Routes>
         {/* Public Routes */}
-        <Route index path="/" element={<Landing />} />
-        <Route path="/signin" element={<SignIn />} />
+{/*         <Route index path="/" element={<Landing />} />
+        <Route path="/signin" element={<SignIn />} /> */}
+        <Route
+          path="/"
+          element={isLoggedIn ? <Navigate to="/home" /> : <Landing />}
+        />
+        <Route
+          path="/signin"
+          element={isLoggedIn ? <Navigate to="/home" /> : <SignIn />}
+        />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgotpassword" element={<PasswordBlock />} />
         {/* Protected Routes */}
