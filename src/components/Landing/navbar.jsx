@@ -12,9 +12,9 @@ const Navbar = () => {
 
   return (
     <header
-      className="fixed top-0 left-0 z-50 w-full bg-white text-white shadow-md transition duration-300"
-      style={{ backgroundColor: '#00BFFF' }}
-      role="banner"
+      className="fixed top-0 left-0 z-50 w-full bg-[#4F6DF5] dark:bg-[#1E3A8A] text-white shadow-md transition duration-300"
+{/*       style={{ backgroundColor: '#00BFFF' }}
+      role="banner" */}
       aria-label="Navigation bar"
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -28,7 +28,7 @@ const Navbar = () => {
           } absolute top-[64px] left-0 w-full bg-blue-800 lg:static lg:block lg:w-auto lg:bg-transparent`}
           style={{ backgroundColor: '#00BFFF' }}
         >
-          <ul className="flex flex-col lg:flex-row items-center gap-5 p-4 lg:p-0">
+          <ul className="flex flex-col bg-[#4F6DF5] dark:bg-[#1E3A8A] lg:flex-row items-center gap-5 p-4 lg:p-0">
             {["home", "about", "developer", "services", "intro", "contact"].map(
               (sectionId) => (
                 <li key={sectionId}>
