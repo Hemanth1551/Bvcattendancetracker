@@ -13,8 +13,8 @@ const Navbar = () => {
   return (
     <header
       className="fixed top-0 left-0 z-50 w-full bg-[#4F6DF5] dark:bg-[#1E3A8A] text-white shadow-md transition duration-300"
-{/*       style={{ backgroundColor: '#00BFFF' }}
-      role="banner" */}
+{/*       style={{ backgroundColor: '#00BFFF' }} */}
+      role="banner" 
       aria-label="Navigation bar"
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
