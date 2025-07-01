@@ -4,8 +4,9 @@ import Hero from '../../assets/hero.png';
 export default function Homee() {
   return (
     <section
-      id="home"
+      id="homee"
       className="relative overflow-hidden bg-blue-700 text-white pt-[120px] md:pt-[130px] lg:pt-[160px]"
+      style={{ backgroundImage: "url('https://bvcgroup.in/wp-content/uploads/2024/03/Untitled-design.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-center">
@@ -22,7 +23,7 @@ export default function Homee() {
             {/* CTA Buttons */}
             <div className="mb-10 flex flex-wrap items-center justify-center gap-4 md:gap-5">
               <a
-                href="/signup"
+                href="/signin"
                 // onClick={(e) => e.preventDefault()}
                 className="inline-flex items-center justify-center rounded-md bg-white text-blue-700 px-5 py-3 text-base font-medium shadow-md hover:bg-gray-100 md:px-7 md:py-[14px]"
               >
@@ -74,14 +75,6 @@ export default function Homee() {
               alt="Hero"
               className="mx-auto max-w-full rounded-xl"
             />
-            {/* <img
-  src={Hero}
-  alt="Hero"
-  className="mx-auto w-full h-[250px] sm:h-[200px] md:h-auto max-w-[845px] rounded-xl object-cover"
-/> */}
-
-
-            {/* Decorative dots */}
             <img
               src={Dot}
               alt="dots left"
