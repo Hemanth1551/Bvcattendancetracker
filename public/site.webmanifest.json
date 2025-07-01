@@ -1,6 +1,6 @@
 {
-  "name": "HD EduTime",
-  "short_name": "HD EduTime",
+  "name": "BVC's Attendance System",
+  "short_name": "BVC's Attendance System",
   "start_url": "/signin",
   "display": "standalone",
   "background_color": "#ffffff",
