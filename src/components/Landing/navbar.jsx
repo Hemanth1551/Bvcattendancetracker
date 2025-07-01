@@ -29,14 +29,21 @@ const Navbar = () => {
           style={{ backgroundColor: '#00BFFF' }}
         >
           <ul className="flex flex-col lg:flex-row items-center gap-5 p-4 lg:p-0">
-            {["home", "services", "portfolio", "pricing", "team", "contact"].map(
-              (section) => (
-                <li key={section}>
+            {["home", "about", "developer", "services", "intro", "contact"].map(
+              (sectionId) => (
+                <li key={sectionId}>
                   <a
-                    href={`#${section}`}
+                    href={`#${sectionId}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const sectionElement = document.getElementById(sectionId);
+                      if (sectionElement) {
+                        sectionElement.scrollIntoView({ behavior: "smooth" });
+                      }
+                    }}
                     className="text-white hover:text-gray-300 font-medium transition-colors"
                   >
-                    {section.charAt(0).toUpperCase() + section.slice(1)}
+                    {sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}
                   </a>
                 </li>
               )
