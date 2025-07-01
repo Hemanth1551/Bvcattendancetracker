@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useLocation } from "react-router"
+import logo from "../assets/logo-home-mobile.png"
 
 // Assume these icons are imported from an icon library
 import {
@@ -260,14 +261,14 @@ const AppSidebar = () => {
             <>
               <img
                 className="dark:hidden"
-                src="/images/logo//logo-home.png"
+                src={logo}
                 alt="Logo"
                 width={150}
                 height={40}
               />
               <img
                 className="hidden dark:block"
-                src="/images/logo//logo-home.png"
+                src={logo}
                 alt="Logo"
                 width={150}
                 height={40}
@@ -275,7 +276,7 @@ const AppSidebar = () => {
             </>
           ) : (
             <img
-              src="/images/logo/logo-home.png"
+              src={logo}
               alt="Logo"
               width={32}
               height={32}
