@@ -12,43 +12,36 @@ const Navbar = () => {
 
   return (
     <header
-      className="fixed top-0 left-0 z-50 w-full bg-blue-700 text-white shadow-md transition duration-300"
+      className="fixed top-0 left-0 z-50 w-full bg-white text-white shadow-md transition duration-300"
+      style={{ backgroundColor: '#00BFFF' }}
       role="banner"
       aria-label="Navigation bar"
     >
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <a href="." className="flex items-center">
+        <a href="https://bvcits.edu.in/" className="flex items-center">
           <img src={logo} alt="Logo" className="w-14 h-auto sm:w-16" />
         </a>
-
         <nav
           className={`${
             isMenuOpen ? "block" : "hidden"
           } absolute top-[64px] left-0 w-full bg-blue-800 lg:static lg:block lg:w-auto lg:bg-transparent`}
+          style={{ backgroundColor: '#00BFFF' }}
         >
           <ul className="flex flex-col lg:flex-row items-center gap-5 p-4 lg:p-0">
-            {["home", "about", "developer", "services", "intro", "contact"].map(
-              (sectionId) => (
-                <li key={sectionId}>
+            {["home", "services", "portfolio", "pricing", "team", "contact"].map(
+              (section) => (
+                <li key={section}>
                   <a
-                    href={`#${sectionId}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const sectionElement = document.getElementById(sectionId);
-                      if (sectionElement) {
-                        sectionElement.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
+                    href={`#${section}`}
                     className="text-white hover:text-gray-300 font-medium transition-colors"
                   >
-                    {sectionId.charAt(0).toUpperCase() + sectionId.slice(1)}
+                    {section.charAt(0).toUpperCase() + section.slice(1)}
                   </a>
                 </li>
               )
             )}
           </ul>
-
         </nav>
 
         {/* Right side buttons */}
@@ -66,7 +59,7 @@ const Navbar = () => {
           </button>
 
           <a
-            href="/signup"
+            href="/signin"
             className="hidden lg:inline-block px-5 py-2 rounded bg-white text-blue-700 hover:bg-gray-100 font-semibold transition"
           >
             Get Started
