@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Intro from "../../assets/intro-video.png"; // adjust path as needed
+import Intro from "../../assets/logo-home.png"; // adjust path as needed
 
 
 export default function IntroVideoSection() {
@@ -16,7 +16,7 @@ export default function IntroVideoSection() {
         Watch Our Intro Video
       </h2>
       <p className="text-gray-600 dark:text-gray-300">
-        There are many variations of passages of Lorem Ipsum...
+        Get a quick overview of our platform, features, and how we can help you succeed in your learning journey.
       </p>
     </div>
 
@@ -24,7 +24,7 @@ export default function IntroVideoSection() {
       <img
         src={Intro}
         alt="Intro video"
-        className="w-full h-auto object-cover aspect-video"
+        className="w-full h-30 md:h-80 lg:h-96 p-0 lg:p-20 rounded-xl"
       />
       <button
         onClick={() => setShowVideo(true)}
@@ -50,7 +50,7 @@ export default function IntroVideoSection() {
         </button>
         <div className="aspect-w-16 aspect-h-9">
           <iframe
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+            src="https://www.youtube.com/embed/pEhyym5uw6E"
             title="Intro Video"
             allow="autoplay; encrypted-media"
             allowFullScreen
