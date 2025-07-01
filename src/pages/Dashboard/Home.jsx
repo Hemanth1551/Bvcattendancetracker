@@ -97,7 +97,7 @@ export default function Home() {
   return (
     <>
       <PageMeta
-        title="HD EduTime"
+        title="BVC's Attendance System"
         description="This is React.js Ecommerce Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
 
