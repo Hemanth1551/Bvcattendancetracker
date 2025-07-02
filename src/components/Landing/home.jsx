@@ -45,7 +45,7 @@ export default function Homee() {
 
             {/* Attribution */}
             <p className="mb-4">
-              Powered by <a href="https://www.hemanthdommeti.me" className="text-white font-medium underline">Hemanth Dommeti</a>
+              Powered by <a href="https://bvcits.edu.in/" className="text-white font-medium underline">BVCITS</a>
             </p>
 
             {/* Tailwind CSS logo or decoration */}
