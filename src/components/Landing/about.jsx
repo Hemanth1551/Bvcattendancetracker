@@ -6,24 +6,21 @@ const tabData = [
     id: "profile",
     title: "Our Profile",
     content: [
-      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-      "There are many variations of passages of Lorem Ipsum available, but the majority have in some form, by injected humour.",
+      "Our goal is to create systems that are not only functional but also intuitive and impactful for both students and administrators",
     ],
   },
   {
     id: "vision",
     title: "Our Vision",
     content: [
-      "Our vision is to streamline student attendance with modern, secure, and automated solutions built for institutions like BVC.",
-      "We aim to reduce manual errors and bring efficiency to student presence tracking.",
+      "This attendance system ensures transparent, day-by-day tracking—giving students clear and accessible attendance data.",
     ],
   },
   {
     id: "history",
     title: "Our History",
     content: [
-      "Started as a final-year project, this system evolved into a functional prototype exclusively for BVC’s 4th-year students.",
-      "Our motivation comes from solving real problems faced in campus administration.",
+      "This system is a fully functional prototype developed exclusively for BVC, aimed at streamlining and improving attendance management.",
     ],
   },
 ];
