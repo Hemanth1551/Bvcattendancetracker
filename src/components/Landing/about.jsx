@@ -20,7 +20,7 @@ const tabData = [
     id: "history",
     title: "Our History",
     content: [
-      "This system is a fully functional prototype developed exclusively for BVC, aimed at streamlining and improving attendance management.",
+      "This system is a fully functional prototype developed exclusively for BVC",
     ],
   },
 ];
