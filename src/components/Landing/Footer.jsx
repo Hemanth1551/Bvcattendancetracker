@@ -10,7 +10,7 @@ const Footer = () => {
           <a href="#" className="inline-block mb-4">
             <img src={logo} alt="Logo" className="w-10" />
           </a>
-          <p className="mb-4 font-semibold">HD EduTime</p>
+          <p className="mb-4 font-semibold">BVCITS</p>
           <p className="text-gray-400 mb-6">
             We build attendance systems that are simple, accurate, and efficient.
           </p>
@@ -85,12 +85,12 @@ const Footer = () => {
         <p>
           © 2025 Attendance System. All rights reserved. Distributed by{' '}
           <a
-            href="https://hemanthdommeti.me"
+            href="https://bvcits.edu.in/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-400 hover:text-blue-500"
           >
-            Hemanth Dommeti
+            BVCITS
           </a>
         </p>
       </div>
