@@ -1,12 +1,13 @@
 import Dot from '../../assets/dots.svg';
 import Hero from '../../assets/hero.png';
+import CLG from "../../assets/clg.png"
 
 export default function Homee() {
   return (
     <section
       id="homee"
-      className="relative overflow-hidden bg-blue-700 text-white pt-[120px] md:pt-[130px] lg:pt-[160px]"
-      style={{ backgroundImage: "url('https://bvcgroup.in/wp-content/uploads/2024/03/Untitled-design.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}
+      className="relative overflow-hidden text-white pt-[120px] md:pt-[130px] lg:pt-[160px]"
+      style={{ backgroundImage: `url(${CLG})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-center">
