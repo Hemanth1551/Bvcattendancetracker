@@ -34,14 +34,22 @@ const navigate = useNavigate();
   //     [e.target.name]: e.target.value,
   //   }));
   // };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
 
-      setFormData((prev) => ({
-        ...prev,
-        [name]: name === "email" ? value.toLowerCase() : value,
-      }));
-  };
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       [name]: name === "email" ? value.toLowerCase() : value,
+  //     }));
+  // };
+  const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: ["email", "rollNumber"].includes(name) ? value.toLowerCase() : value
+  }));
+};
 
 
   const handleSubmit = async (e) => {
