@@ -15,6 +15,8 @@ import SignUp from "./pages/AuthPages/SignUp";
 import ProtectedRoute from "./components/ProtectedRoute"; // <-- import this
 import PasswordBlock from "./pages/PasswordReset/Passwordreset";
 import { Navigate } from "react-router-dom";
+import StudentAttendance from "./pages/StudentAttedance/StudentAttedance";
+import Dd from "./pages/collegeDays/CollegeDays"
 
 
 export default function App() {
