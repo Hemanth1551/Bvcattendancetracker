@@ -47,6 +47,8 @@ const othersItems = [
   }
 ]
 
+
+
 const AppSidebar = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar()
   const location = useLocation()
@@ -54,6 +56,26 @@ const AppSidebar = () => {
   const [openSubmenu, setOpenSubmenu] = useState(null)
   const [subMenuHeight, setSubMenuHeight] = useState({})
   const subMenuRefs = useRef({})
+
+
+    let student = {};
+  try {
+    const storedStudent = localStorage.getItem("student");
+    if (storedStudent) student = JSON.parse(storedStudent);
+  } catch (error) {
+    console.error("Invalid student JSON:", error);
+  }
+
+  const stuEmail = student.email;
+
+
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+
+
+
+
+const input = stuEmail;
+const isEmailMatch = input === adminEmail;
 
   // const isActive = (path: string) => location.pathname === path;
   const isActive = useCallback(path => location.pathname === path, [
@@ -299,7 +321,8 @@ const AppSidebar = () => {
               </h2>
               {renderMenuItems(navItems, "main")}
             </div>
-            <div className="">
+            {isEmailMatch && (
+              <div className="">
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered
@@ -315,6 +338,8 @@ const AppSidebar = () => {
               </h2>
               {renderMenuItems(othersItems, "others")}
             </div>
+            )
+            }
           </div>
         </nav>
       </div>
