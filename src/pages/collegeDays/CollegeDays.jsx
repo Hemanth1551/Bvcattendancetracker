@@ -55,7 +55,7 @@ export default function Alerts() {
   const fetchAllDaysData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/day/alldays");
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/day/alldays`);
       setAllDays(res.data);
       setFilteredDays(res.data); // default to show all
     } catch (err) {
