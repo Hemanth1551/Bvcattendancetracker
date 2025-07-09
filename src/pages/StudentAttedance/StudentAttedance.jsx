@@ -39,7 +39,7 @@ const [formdata, setFormData] = useState({
   const fetchAllAttedanceData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/studentAttendance/getAllstudentattedancestoid");
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/studentAttendance/getAllstudentattedancestoid`);
       setAttedancData(res.data);
       setFilteredStudentAttedance(res.data); // default to show all
     } catch (err) {
