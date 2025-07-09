@@ -1,12 +1,10 @@
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
-import Alert from "../../components/ui/alert/Alert";
 import PageMeta from "../../components/common/PageMeta";
 import Input from "../../components/form/input/InputField";
 import Button from "../../components/ui/button/Button";
 import Badge from "../../components/ui/badge/Badge";
 import { useEffect, useState } from "react";
-import { addDay } from "../../api/days";
 import axios from "axios";
 
 export default function Alerts() {
