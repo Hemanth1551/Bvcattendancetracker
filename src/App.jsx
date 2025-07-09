@@ -53,6 +53,9 @@ export default function App() {
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/badge" element={<Badges />} />
           <Route path="/buttons" element={<Buttons />} />
+          <Route path="/days" element={<Dd />} />
+          <Route path="/studentatt" element={<StudentAttendance />} />
+
         </Route>
 
         {/* Not Found */}
