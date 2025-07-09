@@ -39,14 +39,10 @@ const navItems = [
 const othersItems = [
   {
     icon: <BoxCubeIcon />,
-    name: "UI Elements",
+    name: "Admin Tools",
     subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false }
+      { name: "College Days", path: "/days", pro: false },
+      { name: "Student Attedance", path: "/studentatt", pro: false }
     ]
   }
 ]
@@ -311,13 +307,13 @@ const AppSidebar = () => {
                     : "justify-start"
                 }`}
               >
-                {/* {isExpanded || isHovered || isMobileOpen ? (
+                {isExpanded || isHovered || isMobileOpen ? (
                   "Others"
                 ) : (
                   <HorizontaLDots />
-                )} */}
+                )}
               </h2>
-              {/* {renderMenuItems(othersItems, "others")} */}
+              {renderMenuItems(othersItems, "others")}
             </div>
           </div>
         </nav>
