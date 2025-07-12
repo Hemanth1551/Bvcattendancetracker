@@ -16,7 +16,8 @@ import ProtectedRoute from "./components/ProtectedRoute"; // <-- import this
 import PasswordBlock from "./pages/PasswordReset/Passwordreset";
 import { Navigate } from "react-router-dom";
 import StudentAttendance from "./pages/StudentAttedance/StudentAttedance";
-import Dd from "./pages/collegeDays/CollegeDays"
+import Dd from "./pages/collegeDays/CollegeDays";
+import Students from "./pages/Student/Students";
 
 
 export default function App() {
@@ -57,6 +58,8 @@ export default function App() {
           <Route path="/buttons" element={<Buttons />} />
           <Route path="/days" element={<Dd />} />
           <Route path="/studentatt" element={<StudentAttendance />} />
+          <Route path="/student" element={<Students />} />
+
 
         </Route>
 
