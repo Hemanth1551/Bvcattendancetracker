@@ -56,9 +56,20 @@ const navigate = useNavigate();
       message: "You will be redirected shortly.",
     });
 
+   const ee = import.meta.env.VITE_FACULTY_EMAIL;
+
     // Redirect after delay
-    setTimeout(() => {
-      navigate("/home");
+    // setTimeout(() => {
+    //   navigate("/home");
+    // }, 1500);
+   setTimeout(() => {
+      // navigate("/home");
+      if(ee===student.email){
+        navigate("/days");
+      }
+      else{
+        navigate("/home");
+      }
     }, 1500);
   } catch (err) {
   console.error("Login error:", err);
