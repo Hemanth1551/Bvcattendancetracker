@@ -4,6 +4,7 @@ import Badge from "../ui/badge/Badge";
 import axios from "axios";
 import { AddStudentAttendance } from "../../api/studentAttendance";
 import Alert from "../ui/alert/Alert";
+import Input from "../../components/form/input/InputField";
 
 export default function MissedAttendanceTable() {
   const [missedDays, setMissedDays] = useState([]);
