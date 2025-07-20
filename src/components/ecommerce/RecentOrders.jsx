@@ -40,7 +40,7 @@ export default function RecentOrders({ tableData }) {
 
   const deleteAttendance = async (id, date) => {
       try {
-        const res = await axios.delete(`http://localhost:5000/api/studentAttendance/student/deleteatt/${id}/${date}`);
+        const res = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/studentAttendance/student/deleteatt/${id}/${date}`);
         setAlert({
           variant: "success",
           title: "Attendance Deleted",
