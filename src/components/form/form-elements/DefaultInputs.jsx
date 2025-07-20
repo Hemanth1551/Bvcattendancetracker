@@ -181,7 +181,7 @@ export default function DefaultInputs() {
           {inCollege === null && <p>📍 Checking your GPS location...</p>}
           {inCollege !== null && (
             <p>
-              <strong>📌 College Status:</strong> {inCollege ? `✅ Inside college area (IP: ${ip})` : `❌ Outside college area (IP: ${ip})`}
+              <strong>📌 College Status:</strong> {inCollege ? `✅ Inside college area` : `❌ Outside college area`}
               <br />
               <strong>🧭 Distance:</strong> {distance?.toFixed(2)} km
             </p>
