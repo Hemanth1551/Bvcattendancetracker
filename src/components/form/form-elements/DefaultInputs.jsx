@@ -48,7 +48,7 @@ export default function DefaultInputs() {
     if (ip) {
       const updated = { ...up, ipaddress: ip };
       setup(updated);
-      myFunctionAfterIP(updated);
+      // myFunctionAfterIP(updated);
     }
   }, [ip]);
 
