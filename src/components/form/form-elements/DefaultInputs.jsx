@@ -10,6 +10,18 @@ import axios from "axios"
 
 export default function DefaultInputs() {
 
+  const [ip, setIp] = useState('');
+  const [inCollege, setInCollege] = useState(null);
+  const [distance, setDistance] = useState(null);
+
+  const COLLEGE_COORDS = {
+     lat: 16.5558913,
+     lng: 81.9790896
+
+  };
+
+  const MAX_DISTANCE_KM = 1;
+
   let student = {};
   try {
     const storedStudent = localStorage.getItem("student");
@@ -18,6 +30,63 @@ export default function DefaultInputs() {
     console.error("Invalid student JSON:", error);
   }
   const stuId = student.id;
+
+
+  const [up, setup] = useState({
+    email: student.email,
+    ipaddress: ""
+  });
+
+  useEffect(() => {
+    fetch("https://api.ipify.org?format=json")
+      .then(res => res.json())
+      .then(data => setIp(data.ip))
+      .catch(err => console.error("IP fetch error:", err));
+  }, []);
+
+  useEffect(() => {
+    if (ip) {
+      const updated = { ...up, ipaddress: ip };
+      setup(updated);
+      myFunctionAfterIP(updated);
+    }
+  }, [ip]);
+
+  function getDistanceKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) *
+      Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const { latitude, longitude } = pos.coords;
+          const dist = getDistanceKm(latitude, longitude, COLLEGE_COORDS.lat, COLLEGE_COORDS.lng);
+          // console.log("Your location:", latitude, longitude);
+          // console.log("College location:", COLLEGE_COORDS.lat, COLLEGE_COORDS.lng);
+          // console.log("Distance to college:", dist.toFixed(2), "km");
+          setDistance(dist);
+          setInCollege(dist <= MAX_DISTANCE_KM);
+        },
+        err => {
+          console.error("Location error:", err);
+          setInCollege(false);
+        }
+      );
+    } else {
+      alert("Geolocation not supported");
+    }
+  }, []);
+
+  
 
   const [attendanceData, setattendanceData] = useState({
     studentId: stuId,
@@ -109,6 +178,14 @@ export default function DefaultInputs() {
       )}
       <form onSubmit={handleSubmit}>
         <div className="space-y-6">
+          {inCollege === null && <p>📍 Checking your GPS location...</p>}
+          {inCollege !== null && (
+            <p>
+              <strong>📌 College Status:</strong> {inCollege ? `✅ Inside college area (IP: ${ip})` : `❌ Outside college area (IP: ${ip})`}
+              <br />
+              <strong>🧭 Distance:</strong> {distance?.toFixed(2)} km
+            </p>
+          )}
           <div>
             <Label htmlFor="presentedClasses">Enter Your Presented Classes</Label>
             <Input
