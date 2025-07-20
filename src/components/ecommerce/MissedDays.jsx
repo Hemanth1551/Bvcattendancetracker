@@ -52,7 +52,7 @@ export default function MissedAttendanceTable() {
         ...prev,
         [name]: value,
         presentedClasses: value === "present" ? 6 : 0,
-        missingClasses: value === "present" ? 0 : 0,
+        missingClasses: value === "absent" ? 0 : 0,
       }));
     } else {
       setFormData((prev) => ({
@@ -179,6 +179,34 @@ export default function MissedAttendanceTable() {
               <option value="present">Present</option>
               <option value="absent">Absent</option>
             </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">PresentedClasses</label>
+            <Input
+              type="number"
+              id="presentedClasses"
+              name="presentedClasses"
+              min={0}
+              max={6}
+              onChange={handleChange}
+              placeholder="0-6"
+              value={formData.presentedClasses}
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">MissingClasses</label>
+            <Input
+              type="number"
+              id="missingClasses"
+              name="missingClasses"
+              min={0}
+              max={6}
+              onChange={handleChange}
+              placeholder="0-6"
+              value={formData.missingClasses}
+            />
           </div>
 
           <button
