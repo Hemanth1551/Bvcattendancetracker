@@ -1,10 +1,114 @@
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "../ui/table"
 import Badge from "../ui/badge/Badge"
+import { BiSolidEdit } from "react-icons/bi";
+import { MdDelete, MdOutlineViewInAr } from "react-icons/md";
+
+import { useEffect, useState } from "react"
+import { Modal } from "../ui/modal";
+import axios from "axios"
+import Alert from "../ui/alert/Alert";
+
+
 
 export default function RecentOrders({ tableData }) {
+  const [selectedAttendance, setSelectedAttendance] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [alert, setAlert] = useState(null);
+
+
+  const handleEditClick = (record) => {
+    setSelectedAttendance(record);
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setSelectedId(null);
+  };
+
+
+  let student = {};
+  try {
+    const storedStudent = localStorage.getItem("student");
+    if (storedStudent) student = JSON.parse(storedStudent);
+    // console.log("data",storedStudent);
+  } catch (error) {
+    console.error("Invalid student JSON:", error);
+  }
+
+  const stuId = student.id;
+
+  const deleteAttendance = async (id, date) => {
+      try {
+        const res = await axios.delete(`http://localhost:5000/api/studentAttendance/student/deleteatt/${id}/${date}`);
+        setAlert({
+          variant: "success",
+          title: "Attendance Deleted",
+          message: "Attendance has been deleted successfully.",
+        });
+      } catch (err) {
+        setAlert({
+          variant: "error",
+          title: "Deletion Failed",
+          message: "Please try again. " + (err.response?.data?.message || err.message),
+        });
+      }
+    };
+
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
+        
+        {isOpen && selectedAttendance && (
+
+          <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+            {alert && (
+                    <div className="mb-4">
+                      <Alert
+                        variant={alert.variant}
+                        title={alert.title}
+                        message={alert.message}
+                      />
+                    </div>
+                  )}
+          <div className="relative w-full p-6 bg-white rounded-3xl dark:bg-gray-900">
+            <h4 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+              View attedance
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
+              <p><strong>Date:</strong> {selectedAttendance.date?.split("T")[0]}</p>
+              <p><strong>Presented Classes:</strong> {selectedAttendance.presentedClasses}</p>
+              <p><strong>Missing Classes:</strong> {selectedAttendance.missingClasses}</p>
+              <p><strong>Status:</strong> {selectedAttendance.status}</p>
+              <p><strong>Marked Time:</strong> {selectedAttendance.markedTime?.split("T")[1]?.split(".")[0]}</p>
+              <p><strong>Location:</strong> {selectedAttendance.location}</p>
+              <p><strong>Created At:</strong> {selectedAttendance.createdAt}</p>
+            </div>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mt-6">
+              <p className="text-sm text-blue-600 items-center p-2 dark:text-gray-300 border border-blue-600 rounded leading-relaxed md:max-w-xl dark:bg-gray-800">
+                <b>Note</b> : The student has not updated the previous attendance. If you have posted incorrect attendance, you can delete it and go to the pending attendance section to repost it.
+              </p>
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-300 rounded hover:bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-600"
+                onClick={() => {
+                  deleteAttendance(selectedAttendance.studentId, selectedAttendance.date)
+                }}
+              >
+                Delete
+                <MdDelete className="text-lg" />
+              </button>
+            </div>
+
+          </div>
+        </Modal>
+
+        )}
+
+
+        
+
+
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
             Recent Attendence
@@ -90,6 +194,12 @@ export default function RecentOrders({ tableData }) {
               >
                 Marked Time
               </TableCell>
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-center text-gray-500  text-theme-xs dark:text-gray-400"
+              >
+                View Record 
+              </TableCell>
             </TableRow>
           </TableHeader>
 
@@ -124,6 +234,11 @@ export default function RecentOrders({ tableData }) {
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   {product.markedTime.split("T")[1].split(".")[0]}
                 </TableCell>
+                <TableCell className="text-center">
+                  <button onClick={() => handleEditClick(product)}>
+                    <MdOutlineViewInAr />
+                  </button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -132,3 +247,5 @@ export default function RecentOrders({ tableData }) {
     </div>
   )
 }
+
+
