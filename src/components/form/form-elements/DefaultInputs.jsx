@@ -7,6 +7,17 @@ import Button from "../../ui/button/Button.jsx";
 import { AddStudentAttendance } from "../../../api/studentAttendance.js";
 import Alert from "../../../components/ui/alert/Alert";
 import axios from "axios"
+import { isMobile, isDesktop, isTablet } from "react-device-detect";
+
+
+function generateUUID() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 export default function DefaultInputs() {
 
@@ -34,23 +45,52 @@ export default function DefaultInputs() {
 
   const [up, setup] = useState({
     email: student.email,
-    ipaddress: ""
+    deviceId: ""
   });
 
   useEffect(() => {
-    fetch("https://api.ipify.org?format=json")
-      .then(res => res.json())
-      .then(data => setIp(data.ip))
-      .catch(err => console.error("IP fetch error:", err));
+    let did = localStorage.getItem("deviceId");
+    if (!did) {
+      did = generateUUID();
+      localStorage.setItem("deviceId", did);
+    }
+    setDeviceId(did);
   }, []);
 
   useEffect(() => {
-    if (ip) {
-      const updated = { ...up, ipaddress: ip };
+    if (deviceId) {
+      const updated = { ...up, deviceId: deviceId };
       setup(updated);
-      // myFunctionAfterIP(updated);
+      myFunctionAfterDevice(updated);
     }
-  }, [ip]);
+  }, [deviceId]);
+
+
+  function myFunctionAfterDevice(updatedUp) {
+    console.log("up",updatedUp);
+    if (!student.deviceId) {
+      if (isMobile && !isTablet && !isDesktop ) {
+        const deviceIdConform = window.confirm("This is your own daily posting attendance Mobile?");
+        if (deviceIdConform) {
+          axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/auth/deviceIdcheck`, updatedUp)
+            .then((res) => console.log("deviceId update success:", res.data))
+            .catch((err) => console.log("deviceId update failed:", err));
+        } else {
+          setAlert({
+            variant: "error",
+            title: "Your device information is needed.",
+            message: "Please prefer your own mobile device",
+          });
+        }
+      } else {
+        setAlert({
+          variant: "error",
+          title: "Attendance posting Failed",
+          message: "Please prefer your own mobile device",
+        });
+      }
+    }
+  }
 
   function getDistanceKm(lat1, lon1, lat2, lon2) {
     const R = 6371;
@@ -70,9 +110,6 @@ export default function DefaultInputs() {
         pos => {
           const { latitude, longitude } = pos.coords;
           const dist = getDistanceKm(latitude, longitude, COLLEGE_COORDS.lat, COLLEGE_COORDS.lng);
-          // console.log("Your location:", latitude, longitude);
-          // console.log("College location:", COLLEGE_COORDS.lat, COLLEGE_COORDS.lng);
-          // console.log("Distance to college:", dist.toFixed(2), "km");
           setDistance(dist);
           setInCollege(dist <= MAX_DISTANCE_KM);
         },
@@ -95,6 +132,8 @@ export default function DefaultInputs() {
     missingClasses: "",
     status: "",
     markedTime: new Date().toISOString(),
+    inCollege: inCollege,
+    deviceId: "",
   });
 
   // ✅ Add alert state
@@ -102,15 +141,16 @@ export default function DefaultInputs() {
 
   // Automatically set status
   useEffect(() => {
-  setattendanceData(prevData => {
-    const value = parseInt(prevData.presentedClasses, 10);
-    const status = value >= 1 && value <= 6 ? "present" : "absent";
-    return {
-      ...prevData,
-      status,
-    };
-  });
-}, [attendanceData.presentedClasses]);
+    setattendanceData(prevData => {
+      const value = parseInt(prevData.presentedClasses, 10);
+      const status = value >= 1 && value <= 6 ? "present" : "absent";
+      return {
+        ...prevData,
+        status,
+        deviceId: deviceId
+      };
+    });
+  }, [attendanceData.presentedClasses, deviceId]);
 
     const [todayData, settodayData] = useState([]);
     useEffect(() => {
@@ -139,26 +179,33 @@ export default function DefaultInputs() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if(todayData.length > 0){
-        await AddStudentAttendance(attendanceData);
-        setAlert({
-          variant: "success",
-          title: "Attendance Marked",
-          message: "Attendance has been recorded successfully.",
-        });
-      }else{
+      if (todayData.length > 0) {
+        if ((isMobile || isDesktop) && !isTablet) {
+          await AddStudentAttendance(attendanceData);
+          setAlert({
+            variant: "success",
+            title: "Attendance Marked",
+            message: "Attendance has been recorded successfully.",
+          });
+        } else {
+          setAlert({
+            variant: "error",
+            title: "Attendance posting Failed!",
+            message: "Please prefer your own mobile device, not Desktop or Laptop.",
+          });
+        }
+      } else {
         setAlert({
           variant: "error",
           title: "Admin has not posted today's result",
           message: "Failed to add attendance.",
         });
       }
-      
     } catch (err) {
       console.error(err);
       setAlert({
         variant: "error",
-        title: "Error",
+        title: "Attendance not posted",
         message: `${err.response?.data?.message || "Failed to add attendance"}`,
       });
     }
@@ -181,8 +228,7 @@ export default function DefaultInputs() {
           {inCollege === null && <p>📍 Checking your GPS location...</p>}
           {inCollege !== null && (
             <p>
-              <strong>📌 College Status:</strong> {inCollege ? `✅ Inside college area` : `❌ Outside college area`}
-              <br />
+              <strong>📌 College Status:</strong> {inCollege ? `✅ Inside college area` : `❌ Outside college area`}<br />
               <strong>🧭 Distance:</strong> {distance?.toFixed(2)} km
             </p>
           )}
