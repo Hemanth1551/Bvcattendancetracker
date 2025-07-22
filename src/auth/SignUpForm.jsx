@@ -5,14 +5,36 @@ import Label from "../components/form/Label"
 import Input from "../components/form/input/InputField"
 import { registerStudent } from "../api/auth"; // or wherever it lives
 import Alert from "../components/ui/alert/Alert";
+import { isMobile, isDesktop, isTablet } from "react-device-detect";
 
 
 // import Checkbox from "../form/input/Checkbox";
 
+function generateUUID() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [alert, setAlert] = useState(null); // null or { variant, title, message }
+  const [deviceId, setDeviceId] = useState('');
 
+
+      useEffect(() => {
+      let did = localStorage.getItem("deviceId");
+      if (!did) {
+        did = generateUUID();
+        localStorage.setItem("deviceId", did);
+      }
+      setDeviceId(did);
+    }, []);
+
+  
 
   const [formData, setFormData] = useState({
     name: "",
@@ -24,7 +46,14 @@ export default function SignUpForm() {
     section: "A",      // same
     phone: "",
     gender: "", 
+    deviceId: "",
   })
+
+useEffect(() => {
+  if (deviceId) {
+    setFormData(prev => ({ ...prev, deviceId: deviceId }));
+  }
+}, [deviceId]);
 
 const navigate = useNavigate();
 
@@ -55,18 +84,44 @@ const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await registerStudent(formData);
+      if((isMobile || isTablet) && !isDesktop){
+        const confirmed = window.confirm("This is your own Mobile?");
 
-      // alert("✅ Registration successful");
-      setAlert({
-        variant: "success",
-        title: "Student registered successfull",
-        message: res.response?.data?.message || "Student registered successfully. Please verify your account via the link sent to your email."
-      });
-      setTimeout(() => {
-        navigate("/signin");
+        console.log("jj", confirmed);
 
-      }, 3000)
+        if (confirmed) {
+
+        const res = await registerStudent(formData);
+
+        setAlert({
+          variant: "success",
+          title: "Please verify your account.",
+          message: res.response?.data?.message || "Student registered successfully. Please verify your account via the link sent to your email."
+        });
+        setTimeout(() => {
+          navigate("/signin");
+
+        }, 3000)
+
+        } else {
+          
+          setAlert({
+            variant: "error",
+            title: "Registration Failed",
+            message: "Please prefer your own device",
+          });
+          console.log("User cancelled registration");
+        }
+        
+      }else {
+          
+          setAlert({
+            variant: "error",
+            title: "Registration Failed",
+            message: "Please prefer your own mobile device",
+          });
+        }
+        
     } catch (err) {
       console.log(err);
       // alert(`❌ ${err.response?.data?.message || "Registration failed"}`);
