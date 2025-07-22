@@ -43,6 +43,7 @@ const othersItems = [
     subItems: [
       { name: "Students", path: "/student", pro: false },
       { name: "College Days", path: "/days", pro: false },
+      { name: "Today Attedance", path: "/studenttodayatt", pro: false },
       { name: "Student Attedance", path: "/studentatt", pro: false }
     ]
   }
