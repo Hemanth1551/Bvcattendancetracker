@@ -32,6 +32,21 @@ export default function SignUpForm() {
         localStorage.setItem("deviceId", did);
       }
       setDeviceId(did);
+
+    const ua = navigator.userAgent;
+    const isChrome =
+      /Chrome/.test(ua) &&
+      /Google Inc/.test(navigator.vendor) &&
+      !/Edg/.test(ua) &&
+      !/OPR/.test(ua);
+
+    if (!isChrome) {
+      setAlert({
+        variant: "error",
+        title: "Registration failed",
+        message: "Please prefer your own mobile device using Google Chrome browser.",
+      });
+    }
     }, []);
 
   
