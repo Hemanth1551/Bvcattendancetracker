@@ -21,7 +21,8 @@ function generateUUID() {
 
 export default function DefaultInputs() {
 
-  const [ip, setIp] = useState('');
+  const [deviceId, setDeviceId] = useState("");
+
   const [inCollege, setInCollege] = useState(null);
   const [distance, setDistance] = useState(null);
 
