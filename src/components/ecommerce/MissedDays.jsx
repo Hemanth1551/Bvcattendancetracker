@@ -69,7 +69,7 @@ export default function MissedAttendanceTable() {
         ...prev,
         [name]: value,
         presentedClasses: value === "present" ? 6 : 0,
-        missingClasses: value === "absent" ? 6 : 0,
+        missingClasses: value === "absent" ? 0 : 0,
       }));
     } else {
       setFormData((prev) => ({
