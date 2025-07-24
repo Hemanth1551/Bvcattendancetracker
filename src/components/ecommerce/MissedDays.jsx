@@ -1,3 +1,4 @@
+// MissedAttendanceTable.jsx
 import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "../ui/table";
 import Badge from "../ui/badge/Badge";
@@ -11,7 +12,6 @@ export default function MissedAttendanceTable() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [formVisible, setFormVisible] = useState(false);
   const [alert, setAlert] = useState(null);
-  const [deviceId, setDeviceId] = useState(""); // ✅ Added deviceId state
 
   let student = {};
   try {
@@ -23,21 +23,19 @@ export default function MissedAttendanceTable() {
 
   const stuId = student.id;
 
-  // ✅ Generate or get deviceId from localStorage
+  const [deviceId, setDeviceId] = useState("");
+
+  // Get deviceId from localStorage
   useEffect(() => {
     let did = localStorage.getItem("deviceId");
     if (!did) {
-      did = crypto.randomUUID?.() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-        const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      });
+      did = crypto.randomUUID();
       localStorage.setItem("deviceId", did);
     }
     setDeviceId(did);
   }, []);
 
-  // Fetch missed attendance
+  // Fetch merged attendance and extract only absent days
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/api/studentAttendance/student/merged/${stuId}`)
@@ -58,7 +56,7 @@ export default function MissedAttendanceTable() {
     missingClasses: "",
     status: "",
     markedTime: new Date().toISOString(),
-    deviceId: "", // ✅ Added deviceId field
+    deviceId: ""
   });
 
   const handleChange = (e) => {
@@ -69,7 +67,7 @@ export default function MissedAttendanceTable() {
         ...prev,
         [name]: value,
         presentedClasses: value === "present" ? 6 : 0,
-        missingClasses: value === "absent" ? 0 : 0,
+        missingClasses: value === "absent" ? 6 : 0,
       }));
     } else {
       setFormData((prev) => ({
@@ -89,7 +87,7 @@ export default function MissedAttendanceTable() {
       missingClasses: 0,
       status: "present",
       markedTime: new Date().toISOString(),
-      deviceId: deviceId, // ✅ Assign deviceId when opening form
+      deviceId: deviceId,
     });
   };
 
@@ -185,8 +183,6 @@ export default function MissedAttendanceTable() {
           <h4 className="font-semibold text-gray-700 mb-2">
             Mark Attendance for {new Date(selectedDate).toDateString()}
           </h4>
-
-          {/* <p className="text-sm text-gray-500 mb-2">📱 Device ID: {deviceId}</p> ✅ Optional display */}
 
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Status</label>
