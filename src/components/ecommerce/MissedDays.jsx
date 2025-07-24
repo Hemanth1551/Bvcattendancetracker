@@ -12,6 +12,11 @@ export default function MissedAttendanceTable() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [formVisible, setFormVisible] = useState(false);
   const [alert, setAlert] = useState(null);
+  const [inCollege, setInCollege] = useState(null);
+  const [distance, setDistance] = useState(null);
+
+  const COLLEGE_COORDS = { lat: 16.5558913, lng: 81.9790896 };
+  const MAX_DISTANCE_KM = 1;
 
   let student = {};
   try {
@@ -22,10 +27,8 @@ export default function MissedAttendanceTable() {
   }
 
   const stuId = student.id;
-
   const [deviceId, setDeviceId] = useState("");
 
-  // Get deviceId from localStorage
   useEffect(() => {
     let did = localStorage.getItem("deviceId");
     if (!did) {
@@ -35,7 +38,6 @@ export default function MissedAttendanceTable() {
     setDeviceId(did);
   }, []);
 
-  // Fetch merged attendance and extract only absent days
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/api/studentAttendance/student/merged/${stuId}`)
@@ -48,7 +50,6 @@ export default function MissedAttendanceTable() {
       });
   }, []);
 
-  // Form state
   const [formData, setFormData] = useState({
     studentId: stuId,
     date: "",
@@ -56,6 +57,7 @@ export default function MissedAttendanceTable() {
     missingClasses: "",
     status: "",
     markedTime: new Date().toISOString(),
+    inCollege: "",
     deviceId: ""
   });
 
@@ -88,6 +90,7 @@ export default function MissedAttendanceTable() {
       status: "present",
       markedTime: new Date().toISOString(),
       deviceId: deviceId,
+      inCollege: true
     });
   };
 
@@ -113,6 +116,49 @@ export default function MissedAttendanceTable() {
       });
     }
   };
+
+  const getDistanceKm = (lat1, lon1, lat2, lon2) => {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const { latitude, longitude } = pos.coords;
+          const dist = getDistanceKm(latitude, longitude, COLLEGE_COORDS.lat, COLLEGE_COORDS.lng);
+          setDistance(dist);
+          setInCollege(dist <= MAX_DISTANCE_KM);
+        },
+        err => {
+          console.error("Location error:", err);
+          setInCollege(false);
+        }
+      );
+    } else {
+      setAlert({
+        variant: "error",
+        title: "Geolocation Unsupported",
+        message: "Your browser does not support geolocation.",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      inCollege: inCollege === null ? "" : inCollege
+    }));
+  }, [inCollege]);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
