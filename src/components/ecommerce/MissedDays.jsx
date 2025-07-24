@@ -90,7 +90,7 @@ export default function MissedAttendanceTable() {
       status: "present",
       markedTime: new Date().toISOString(),
       deviceId: deviceId,
-      inCollege: true
+      inCollege: inCollege
     });
   };
 
