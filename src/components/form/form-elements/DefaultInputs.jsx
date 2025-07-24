@@ -168,7 +168,7 @@ export default function DefaultInputs() {
 
   // Fetch today's working day
   useEffect(() => {
-    axios.get(`http://10.64.36.116:5000/api/day/todayworkingday`)
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/day/todayworkingday`)
       .then((res) => setTodayData(res.data))
       .catch((err) => console.log("Error fetching working day:", err));
   }, []);
