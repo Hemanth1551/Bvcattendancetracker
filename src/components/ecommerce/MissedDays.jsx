@@ -11,6 +11,7 @@ export default function MissedAttendanceTable() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [formVisible, setFormVisible] = useState(false);
   const [alert, setAlert] = useState(null);
+  const [deviceId, setDeviceId] = useState(""); // ✅ Added deviceId state
 
   let student = {};
   try {
@@ -22,7 +23,21 @@ export default function MissedAttendanceTable() {
 
   const stuId = student.id;
 
-  // Fetch merged attendance and extract only absent days
+  // ✅ Generate or get deviceId from localStorage
+  useEffect(() => {
+    let did = localStorage.getItem("deviceId");
+    if (!did) {
+      did = crypto.randomUUID?.() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+      localStorage.setItem("deviceId", did);
+    }
+    setDeviceId(did);
+  }, []);
+
+  // Fetch missed attendance
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/api/studentAttendance/student/merged/${stuId}`)
@@ -43,6 +58,7 @@ export default function MissedAttendanceTable() {
     missingClasses: "",
     status: "",
     markedTime: new Date().toISOString(),
+    deviceId: "", // ✅ Added deviceId field
   });
 
   const handleChange = (e) => {
@@ -73,6 +89,7 @@ export default function MissedAttendanceTable() {
       missingClasses: 0,
       status: "present",
       markedTime: new Date().toISOString(),
+      deviceId: deviceId, // ✅ Assign deviceId when opening form
     });
   };
 
@@ -169,6 +186,8 @@ export default function MissedAttendanceTable() {
             Mark Attendance for {new Date(selectedDate).toDateString()}
           </h4>
 
+          {/* <p className="text-sm text-gray-500 mb-2">📱 Device ID: {deviceId}</p> ✅ Optional display */}
+
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Status</label>
             <select
@@ -183,7 +202,7 @@ export default function MissedAttendanceTable() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">PresentedClasses</label>
+            <label className="block text-sm font-medium mb-1">Presented Classes</label>
             <Input
               type="number"
               id="presentedClasses"
@@ -197,7 +216,7 @@ export default function MissedAttendanceTable() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">MissingClasses</label>
+            <label className="block text-sm font-medium mb-1">Missing Classes</label>
             <Input
               type="number"
               id="missingClasses"
