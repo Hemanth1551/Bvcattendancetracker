@@ -1,4 +1,4 @@
-// Imports
+// DefaultInputs.jsx
 import { useState, useEffect } from 'react';
 import ComponentCard from "../../common/ComponentCard";
 import Label from "../Label";
@@ -6,32 +6,27 @@ import Input from "../input/InputField";
 import Button from "../../ui/button/Button.jsx";
 import { AddStudentAttendance } from "../../../api/studentAttendance.js";
 import Alert from "../../../components/ui/alert/Alert";
-import axios from "axios"
+import axios from "axios";
 import { isMobile, isDesktop, isTablet } from "react-device-detect";
 
-
+// UUID fallback
 function generateUUID() {
   if (crypto.randomUUID) return crypto.randomUUID();
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c === 'x' ? r : (r & 0x3) | 0x8;
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
 
 export default function DefaultInputs() {
-
   const [deviceId, setDeviceId] = useState("");
-
   const [inCollege, setInCollege] = useState(null);
   const [distance, setDistance] = useState(null);
+  const [alert, setAlert] = useState(null);
+  const [todayData, setTodayData] = useState([]);
 
-  const COLLEGE_COORDS = {
-     lat: 16.5558913,
-     lng: 81.9790896
-
-  };
-
+  const COLLEGE_COORDS = { lat: 16.5558913, lng: 81.9790896 };
   const MAX_DISTANCE_KM = 1;
 
   let student = {};
@@ -41,14 +36,21 @@ export default function DefaultInputs() {
   } catch (error) {
     console.error("Invalid student JSON:", error);
   }
+
   const stuId = student.id;
 
-
-  const [up, setup] = useState({
-    email: student.email,
-    deviceId: ""
+  const [attendanceData, setAttendanceData] = useState({
+    studentId: stuId,
+    date: new Date().toISOString().split('T')[0],
+    presentedClasses: "",
+    missingClasses: "",
+    status: "",
+    markedTime: new Date().toISOString(),
+    inCollege: "",
+    deviceId: "",
   });
 
+  // Initialize device ID and confirm with user
   useEffect(() => {
     let did = localStorage.getItem("deviceId");
     if (!did) {
@@ -57,6 +59,7 @@ export default function DefaultInputs() {
     }
     setDeviceId(did);
 
+    // Check for browser/device type
     const ua = navigator.userAgent;
     const isChrome =
       /Chrome/.test(ua) &&
@@ -67,59 +70,59 @@ export default function DefaultInputs() {
     if (!isChrome) {
       setAlert({
         variant: "error",
-        title: "Attendance posting Failed",
-        message: "Please prefer your own mobile device using Google Chrome browser.",
+        title: "Attendance Failed",
+        message: "Please use your mobile device with Google Chrome browser.",
       });
     }
-  }, []);
 
-  useEffect(() => {
-    if (deviceId) {
-      const updated = { ...up, deviceId: deviceId };
-      setup(updated);
-      myFunctionAfterDevice(updated);
-    }
-  }, [deviceId]);
-
-
-  function myFunctionAfterDevice(updatedUp) {
-    console.log("up",updatedUp);
+    // Only attempt to PUT deviceId if student has no deviceId
     if (!student.deviceId) {
-      if (isMobile && !isTablet && !isDesktop ) {
-        const deviceIdConform = window.confirm("This is your own daily posting attendance Mobile?");
-        if (deviceIdConform) {
-          axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/auth/deviceIdcheck`, updatedUp)
-            .then((res) => console.log("deviceId update success:", res.data))
-            .catch((err) => console.log("deviceId update failed:", err));
+      if((isMobile || isDesktop) && !isTablet){
+          const confirm = window.confirm("Is this your personal daily attendance mobile?");
+        if (confirm) {
+          axios.put(`http://10.64.36.116:5000/api/auth/deviceIdcheck`, {
+            email: student.email,
+            deviceId: did
+          })
+            .then(res => console.log("✅ deviceId updated:", res.data))
+            .catch(err => console.error("❌ deviceId update failed:", err));
         } else {
           setAlert({
             variant: "error",
-            title: "Your device information is needed.",
-            message: "Please prefer your own mobile device",
+            title: "Device Not Confirmed",
+            message: "Please use your own mobile to mark attendance.",
           });
         }
-      } else {
-        setAlert({
-          variant: "error",
-          title: "Attendance posting Failed",
-          message: "Please prefer your own mobile device",
-        });
       }
     }
-  }
 
-  function getDistanceKm(lat1, lon1, lat2, lon2) {
+  }, []);
+
+  // Sync deviceId into attendanceData
+  useEffect(() => {
+    if (deviceId) {
+      setAttendanceData(prev => ({
+        ...prev,
+        deviceId: deviceId,
+      }));
+    }
+  }, [deviceId]);
+
+  // Calculate distance between two coordinates
+  const getDistanceKm = (lat1, lon1, lat2, lon2) => {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) ** 2 +
+    const a =
+      Math.sin(dLat / 2) ** 2 +
       Math.cos(lat1 * Math.PI / 180) *
-      Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) ** 2;
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
-  }
+  };
 
+  // Get user location and update inCollege
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -135,119 +138,115 @@ export default function DefaultInputs() {
         }
       );
     } else {
-      alert("Geolocation not supported");
+      setAlert({
+        variant: "error",
+        title: "Geolocation Unsupported",
+        message: "Your browser does not support geolocation.",
+      });
     }
   }, []);
 
-  
-
-  const [attendanceData, setattendanceData] = useState({
-    studentId: stuId,
-    date: new Date().toISOString().split('T')[0],
-    presentedClasses: "",
-    missingClasses: "",
-    status: "",
-    markedTime: new Date().toISOString(),
-    inCollege: inCollege,
-    deviceId: "",
-  });
-
-  // ✅ Add alert state
-  const [alert, setAlert] = useState(null);
-
-  // Automatically set status
+  // Sync inCollege into attendanceData
   useEffect(() => {
-    setattendanceData(prevData => {
-      const value = parseInt(prevData.presentedClasses, 10);
+    setAttendanceData(prev => ({
+      ...prev,
+      inCollege: inCollege === null ? "" : inCollege
+    }));
+  }, [inCollege]);
+
+  // Auto calculate status
+  useEffect(() => {
+    setAttendanceData(prev => {
+      const value = parseInt(prev.presentedClasses, 10);
       const status = value >= 1 && value <= 6 ? "present" : "absent";
       return {
-        ...prevData,
-        status,
-        deviceId: deviceId
+        ...prev,
+        status
       };
     });
-  }, [attendanceData.presentedClasses, deviceId]);
+  }, [attendanceData.presentedClasses]);
 
-    const [todayData, settodayData] = useState([]);
-    useEffect(() => {
-      axios
-        .get(`${import.meta.env.VITE_BACKEND_URL}/api/day/todayworkingday`)
-        .then((res) => {
-          settodayData(res.data);
-        })
-        .catch((err) => {
-          console.log("fetch attendance", err);
-        });
-    }, []);
+  // Fetch today's working day
+  useEffect(() => {
+    axios.get(`http://10.64.36.116:5000/api/day/todayworkingday`)
+      .then((res) => setTodayData(res.data))
+      .catch((err) => console.log("Error fetching working day:", err));
+  }, []);
 
-
-
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setattendanceData(prev => ({
+    setAttendanceData(prev => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  // Submit the form
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      if (todayData.length > 0) {
-        if ((isMobile || isDesktop) && !isTablet) {
-          await AddStudentAttendance(attendanceData);
-          setAlert({
-            variant: "success",
-            title: "Attendance Marked",
-            message: "Attendance has been recorded successfully.",
-          });
-        } else {
-          setAlert({
-            variant: "error",
-            title: "Attendance posting Failed!",
-            message: "Please prefer your own mobile device, not Desktop or Laptop.",
-          });
-        }
-      } else {
+      if (todayData.length === 0) {
         setAlert({
           variant: "error",
-          title: "Admin has not posted today's result",
-          message: "Failed to add attendance.",
+          title: "Attendance Failed",
+          message: "Admin has not posted today's working day.",
         });
+        return;
       }
+
+      if (!isMobile || isTablet) {
+        setAlert({
+          variant: "error",
+          title: "Invalid Device",
+          message: "Please use your mobile phone (not a desktop/tablet).",
+        });
+        return;
+      }
+
+      if (inCollege === null) {
+        setAlert({
+          variant: "error",
+          title: "Location Pending",
+          message: "Please wait until your GPS location is determined.",
+        });
+        return;
+      }
+
+      await AddStudentAttendance(attendanceData);
+
+      setAlert({
+        variant: "success",
+        title: "Attendance Marked",
+        message: "Your attendance has been posted successfully.",
+      });
     } catch (err) {
-      console.error(err);
+      console.error("Attendance error:", err);
       setAlert({
         variant: "error",
-        title: "Attendance not posted",
-        message: `${err.response?.data?.message || "Failed to add attendance"}`,
+        title: "Error Posting Attendance",
+        message: err.response?.data?.message || "Something went wrong.",
       });
     }
   };
 
   return (
     <ComponentCard title="Enter Your Attendance">
-      {/* ✅ Show alert if exists */}
       {alert && (
         <div className="mb-4">
-          <Alert
-            variant={alert.variant}
-            title={alert.title}
-            message={alert.message}
-          />
+          <Alert variant={alert.variant} title={alert.title} message={alert.message} />
         </div>
       )}
       <form onSubmit={handleSubmit}>
         <div className="space-y-6">
-          {inCollege === null && <p>📍 Checking your GPS location...</p>}
-          {inCollege !== null && (
+          {inCollege === null ? (
+            <p>📍 Checking your GPS location...</p>
+          ) : (
             <p>
-              <strong>📌 College Status:</strong> {inCollege ? `✅ Inside college area` : `❌ Outside college area`}<br />
+              <strong>📌 College Status:</strong> {inCollege ? `✅ Inside (ID: ${deviceId})` : `❌ Outside (ID: ${deviceId})`}<br />
               <strong>🧭 Distance:</strong> {distance?.toFixed(2)} km
             </p>
           )}
+
           <div>
             <Label htmlFor="presentedClasses">Enter Your Presented Classes</Label>
             <Input
@@ -261,6 +260,7 @@ export default function DefaultInputs() {
               value={attendanceData.presentedClasses}
             />
           </div>
+
           <div>
             <Label htmlFor="missingClasses">Enter Your Missing Classes</Label>
             <Input
@@ -274,9 +274,10 @@ export default function DefaultInputs() {
               value={attendanceData.missingClasses}
             />
           </div>
+
           <div>
-            <Button className="w-full" size="sm">
-              Post Attendance
+            <Button className="w-full" size="sm" disabled={inCollege === null}>
+              {inCollege === null ? "📍 Locating..." : "Post Attendance"}
             </Button>
           </div>
         </div>
